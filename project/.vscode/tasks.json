@@ -1,0 +1,67 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "command": "make",
+            "args": [
+                "-j16"
+            ],
+            "group": {
+                "kind": "build",    // build ：与label的build没有任何联系。
+                "isDefault": false  // 是否默认启动此任务
+            },
+            "presentation": {
+                "reveal": "always", // 构建任务完成后总是显示输出面板
+                // "panel": "new" // 在新面板中显示输出
+            },
+            "problemMatcher": [
+                "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
+            ]
+        },
+        {
+            "label": "download",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "command": "openocd",
+            "args": [
+                "-f",
+                "tools/openocd/interface/flash_downloader.cfg",
+                "-c",
+                "\"program build/project.hex verify reset exit\""
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false   // 是否默认启动此任务
+            },
+            "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
+            "dependsOn": ["build"]   // 所依赖的任务
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "command": "make",
+            "args": [
+                "-j16",
+                "clean"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false   // 是否默认启动此任务
+            },
+            // "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
+            // "dependsOn": ["build"]   // 所依赖的任务
+        }
+    ]
+}
