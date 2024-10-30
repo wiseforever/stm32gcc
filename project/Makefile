@@ -77,11 +77,13 @@ PREFIX = arm-none-eabi-
 # either it can be added to the PATH environment variable.
 ifdef GCC_PATH
 CC = $(GCC_PATH)/$(PREFIX)gcc
+CXX = $(GCC_PATH)/$(PREFIX)g++
 AS = $(GCC_PATH)/$(PREFIX)gcc -x assembler-with-cpp
 CP = $(GCC_PATH)/$(PREFIX)objcopy
 SZ = $(GCC_PATH)/$(PREFIX)size
 else
 CC = $(PREFIX)gcc
+CXX = $(PREFIX)g++
 AS = $(PREFIX)gcc -x assembler-with-cpp
 CP = $(PREFIX)objcopy
 SZ = $(PREFIX)size
@@ -133,6 +135,9 @@ CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
+OPT := -Og
+else
+OPT := -O2
 endif
 
 
@@ -149,6 +154,42 @@ LDSCRIPT = STM32F429IGTx_FLASH.ld
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
+
+################################ wise ##############################
+VPATH := 
+
+### A child Makefile is introduced
+include config.mk
+
+# Search all .c .cpp files recursively through the find command
+### 
+ifneq ($(SRC_ROOT_DIRS), )
+CSRCS += $(shell find $(SRC_ROOT_DIRS) -name "*.c")
+CXXSRCS += $(shell find $(SRC_ROOT_DIRS) -name "*.cpp")
+CINCS += $(shell find $(INC_ROOT_DIRS) -type d)
+else
+
+endif
+
+### Add CSRCS and CINCS to C_SOURCES and C_INCLUDES
+C_SOURCES += $(CSRCS)
+CXX_SOURCES += $(CXXSRCS)
+C_INCLUDES += $(foreach dir, $(CINCS), -I$(dir))
+
+### Sort the files to avoid duplicate
+C_SOURCES := $(sort $(C_SOURCES))
+CXX_SOURCES := $(sort $(CXX_SOURCES))
+ASM_SOURCES := $(sort $(ASM_SOURCES))
+C_INCLUDES := $(sort $(C_INCLUDES))
+
+### Count the total number of files
+TOTAL_FILES = $(shell echo $$(( \
+	$(words $(notdir $(C_SOURCES))) + \
+	$(words $(notdir $(CXX_SOURCES))) + \
+	$(words $(notdir $(ASM_SOURCES))))))
+
+################################ end. ##############################
+
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
@@ -166,18 +207,34 @@ OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASMM_SOURCES:.S=.o)))
 vpath %.S $(sort $(dir $(ASMM_SOURCES)))
+################################ wise ##############################
+### Add c++ operations
+CXXFLAGS += $(CXXFLAGS_filter_out)
+CXXFLAGS += -fno-rtti -fno-exceptions
+# list of cpp objects
+OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(CXX_SOURCES:.cpp=.o)))
+vpath %.cpp $(sort $(dir $(CXX_SOURCES)))
 
-$(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
-	$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+$(BUILD_DIR)/%.o: %.cpp Makefile $(MAKEFILE_LIST) | $(BUILD_DIR)
+	@$(CXX) $(CXX_VER) -c $(CXXFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.cpp=.lst)) $< -o $@
+	$(cpp_compile_rule)
+################################ end. ##############################
+$(BUILD_DIR)/%.o: %.c Makefile $(MAKEFILE_LIST) | $(BUILD_DIR) 
+	@$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+	$(compile_rule)
 
-$(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
-	$(AS) -c $(CFLAGS) $< -o $@
-$(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
-	$(AS) -c $(CFLAGS) $< -o $@
+$(BUILD_DIR)/%.o: %.s Makefile $(MAKEFILE_LIST) | $(BUILD_DIR)
+	@$(AS) -c $(CFLAGS) $< -o $@
+	$(as_compile_rule)
+$(BUILD_DIR)/%.o: %.S Makefile $(MAKEFILE_LIST) | $(BUILD_DIR)
+	@$(AS) -c $(CFLAGS) $< -o $@
+	$(as_compile_rule)
 
-$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
-	$(SZ) $@
+$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile $(MAKEFILE_LIST) 
+	$(linking_elf_s)
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	@$(SZ) $@ $(SZ_OPTION) $(SZ_FORMAT)
+	$(linking_elf_e)
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@
