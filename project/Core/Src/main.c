@@ -89,19 +89,18 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+#if defined (INC_FREERTOS_H)
+    /* xTaskCreate(app_main_task, "app_main_task", APP_MAIN_TASK_STACK_SIZE, NULL, APP_MAIN_TASK_PRIORITY, &app_main_task_handle);
+    vTaskStartScheduler(); */
+#else
+    app_main();
+#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
-    HAL_Delay(500);
-    
-    HAL_UART_Transmit(&huart1, (const uint8_t *)"Hello World\r\n", 13, 1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

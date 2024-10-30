@@ -17,11 +17,11 @@ CDEFS +=
 
 
 # ### include mk
-# APP_DIR := .
-# APP_DIR_NAME := app
+APP_DIR := .
+APP_DIR_NAME := app
 # LIB_DIR := .
 # LIB_DIR_NAME := lib
-# include $(APP_DIR)/$(APP_DIR_NAME)/app.mk
+include $(APP_DIR)/$(APP_DIR_NAME)/app.mk
 # include $(LIB_DIR)/$(LIB_DIR_NAME)/lib.mk
 
 
