@@ -57,3 +57,4 @@ dkms.conf
 
 # Ignore everything in the "build" directory
 build/*
+compile_commands.json

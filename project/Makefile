@@ -166,6 +166,7 @@ include config.mk
 ifneq ($(SRC_ROOT_DIRS), )
 CSRCS += $(shell find $(SRC_ROOT_DIRS) -name "*.c")
 CXXSRCS += $(shell find $(SRC_ROOT_DIRS) -name "*.cpp")
+CCSRCS += $(shell find $(SRC_ROOT_DIRS) -name "*.cc")
 CINCS += $(shell find $(INC_ROOT_DIRS) -type d)
 else
 
@@ -174,11 +175,13 @@ endif
 ### Add CSRCS and CINCS to C_SOURCES and C_INCLUDES
 C_SOURCES += $(CSRCS)
 CXX_SOURCES += $(CXXSRCS)
+CC_SOURCES += $(CCSRCS)
 C_INCLUDES += $(foreach dir, $(CINCS), -I$(dir))
 
 ### Sort the files to avoid duplicate
 C_SOURCES := $(sort $(C_SOURCES))
 CXX_SOURCES := $(sort $(CXX_SOURCES))
+CC_SOURCES := $(sort $(CC_SOURCES))
 ASM_SOURCES := $(sort $(ASM_SOURCES))
 C_INCLUDES := $(sort $(C_INCLUDES))
 
@@ -186,6 +189,7 @@ C_INCLUDES := $(sort $(C_INCLUDES))
 TOTAL_FILES = $(shell echo $$(( \
 	$(words $(notdir $(C_SOURCES))) + \
 	$(words $(notdir $(CXX_SOURCES))) + \
+	$(words $(notdir $(CC_SOURCES))) + \
 	$(words $(notdir $(ASM_SOURCES))))))
 
 ################################ end. ##############################
@@ -214,9 +218,14 @@ CXXFLAGS += -fno-rtti -fno-exceptions
 # list of cpp objects
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(CXX_SOURCES:.cpp=.o)))
 vpath %.cpp $(sort $(dir $(CXX_SOURCES)))
+OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(CC_SOURCES:.cc=.o)))
+vpath %.cc $(sort $(dir $(CC_SOURCES)))
 
 $(BUILD_DIR)/%.o: %.cpp Makefile $(MAKEFILE_LIST) | $(BUILD_DIR)
 	@$(CXX) $(CXX_VER) -c $(CXXFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.cpp=.lst)) $< -o $@
+	$(cpp_compile_rule)
+$(BUILD_DIR)/%.o: %.cc Makefile $(MAKEFILE_LIST) | $(BUILD_DIR)
+	@$(CXX) $(CXX_VER) -c $(CXXFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.cc=.lst)) $< -o $@
 	$(cpp_compile_rule)
 ################################ end. ##############################
 $(BUILD_DIR)/%.o: %.c Makefile $(MAKEFILE_LIST) | $(BUILD_DIR) 

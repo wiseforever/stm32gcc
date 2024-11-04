@@ -9,8 +9,9 @@
             "options": {
                 "cwd": "${workspaceRoot}"
             },
-            "command": "make",
+            "command": "compiledb",
             "args": [
+                "make",
                 "-j16"
             ],
             "group": {
@@ -21,9 +22,31 @@
                 "reveal": "always", // 构建任务完成后总是显示输出面板
                 // "panel": "new" // 在新面板中显示输出
             },
-            "problemMatcher": [
-                "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
-            ]
+            // "problemMatcher": [
+            //     "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
+            // ]
+        },
+        {
+            "label": "rebuild",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "command": "compiledb",
+            "args": [
+                "make",
+                "-j16"
+            ],
+            "group": {
+                "kind": "build",    // build ：与label的build没有任何联系。
+                "isDefault": false  // 是否默认启动此任务
+            },
+            "presentation": {
+                "reveal": "always", // 构建任务完成后总是显示输出面板
+                // "panel": "new" // 在新面板中显示输出
+            },
+            "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
+            "dependsOn": ["clean"]   // 所依赖的任务
         },
         {
             "label": "download",

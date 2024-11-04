@@ -46,6 +46,7 @@
         "exception": "c",
         "new": "c",
         "typeinfo": "c",
-        "limits": "c"
+        "limits": "c",
+        "hello.hpp": "c"
     }
 }

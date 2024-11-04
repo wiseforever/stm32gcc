@@ -2,16 +2,17 @@
     "configurations": [
         {
             "name": "Debug Configuration",
+            "compileCommands": "${workspaceFolder}/compile_commands.json",
             "includePath": [
-                "${workspaceFolder}",
-                "${workspaceFolder}/**"
+                // "${workspaceFolder}",
+                // "${workspaceFolder}/**"
             ],
             "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE",
-                "USE_HAL_DRIVER",
-                "STM32F429xx"
+                // "_DEBUG",
+                // "UNICODE",
+                // "_UNICODE",
+                // "USE_HAL_DRIVER",
+                // "STM32F429xx"
             ],
             // "compilerPath": "D:/DevelopmentToolsPath/gcc-arm-none-eabi/bin/arm-none-eabi-gcc.exe",
             "compilerPath": "c:/path/gcc-arm-none-eabi/bin/arm-none-eabi-gcc.exe",

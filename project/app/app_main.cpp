@@ -5,10 +5,15 @@
 
 #include "sys.h"
 
+#include "hello.hpp"
+
+
+
 
 static void Hardware_init(void)
 {
-   
+   hello h;
+   h.print_hello();
 }
 
 int app_main(void)
