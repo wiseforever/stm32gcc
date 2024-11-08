@@ -21,6 +21,7 @@
     "terminal.integrated.fontWeight": "normal",
     "editor.mouseWheelZoom": true,
     "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.autoAddFileAssociations": false,
     "cortex-debug.variableUseNaturalFormat": false,
     // Windows 上的默认终端配置文件。
     "terminal.integrated.defaultProfile.windows":"Git Bash",
@@ -38,15 +39,6 @@
     "files.associations": {
         "*.h": "c",
         "*.c": "c",
-        "*.cpp": "cpp",
-        "cstdio": "c",
-        "compare": "c",
-        "type_traits": "c",
-        "cmath": "c",
-        "exception": "c",
-        "new": "c",
-        "typeinfo": "c",
-        "limits": "c",
-        "hello.hpp": "c"
+        "*.cpp": "cpp"
     }
 }
