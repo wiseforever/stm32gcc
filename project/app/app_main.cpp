@@ -5,6 +5,8 @@
 
 #include "sys.h"
 
+#include "delay.h"
+
 #include "hello.hpp"
 
 
@@ -60,12 +62,12 @@ int app_main(void)
 
     Hardware_init();
     
-    float Rldr = 0.88;
-    log_printf("Rldr: %.1f\r\n", Rldr);
+    /* float Rldr = 0.88;
+    log_printf("Rldr: %.1f\r\n", Rldr); */
 
-    comm_demo();
+   /*  comm_demo(); */
     
-    xTaskCreate(lcd_task, "lcd_task", 512, NULL, 2, &lcd_task_handle);
+    /* xTaskCreate(lcd_task, "lcd_task", 512, NULL, 2, &lcd_task_handle); */
 
     while (1)
     {
@@ -88,11 +90,11 @@ int app_main(void)
             // log_printf("%d-%02d-%02d  %02d:%02d:%02d\r\n",ds1302.year + 2000,ds1302.month,ds1302.day,
             //                                                 ds1302.hour,ds1302.min,ds1302.sec);
             // log_printf("main_task!\r\n");
-            if (inc++ % 2 == 0) {
+            /* if (inc++ % 2 == 0) {
                 led_on();
             } else {
                 led_off();
-            }
+            } */
 
             app_main_loop_tms = sys_tick_get();
         }

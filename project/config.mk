@@ -12,17 +12,17 @@ CDEFS +=
 
 
 # ### 
-# SRC_ROOT_DIRS :=  bsp
-# INC_ROOT_DIRS := $(SRC_ROOT_DIRS)
+SRC_ROOT_DIRS := bsp
+INC_ROOT_DIRS := $(SRC_ROOT_DIRS)
 
 
 # ### include mk
 APP_DIR := .
 APP_DIR_NAME := app
-# LIB_DIR := .
-# LIB_DIR_NAME := lib
+LIB_DIR := .
+LIB_DIR_NAME := lib
 include $(APP_DIR)/$(APP_DIR_NAME)/app.mk
-# include $(LIB_DIR)/$(LIB_DIR_NAME)/lib.mk
+include $(LIB_DIR)/$(LIB_DIR_NAME)/lib.mk
 
 
 ### linker script
