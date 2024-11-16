@@ -10,15 +10,15 @@ extern "C" {
 
 #if (SYSTEM_SUPPORT_OS == 0)
 
-    void delay_xus(volatile unsigned int xus);
+    void delay_xus(volatile sys_tick_t xus);
 
-    void delay_xms(volatile unsigned int xms);
+    void delay_xms(volatile sys_tick_t xms);
 
-    void Delay_us(uint32_t us);
+    void Delay_us(sys_tick_t us);
 
-    void Delay_ms(uint32_t ms);
+    void Delay_ms(sys_tick_t ms);
 
-    void Delay_s(uint32_t s);
+    void Delay_s(sys_tick_t s);
 
 #elif (SYSTEM_SUPPORT_OS == 1)
 

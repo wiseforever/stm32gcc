@@ -7,15 +7,16 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./build/project.elf",
+            "executable": "./build/bin/project.elf",
             "request": "launch",
             "type": "cortex-debug",
             // "runToEntryPoint": "main", // 此选项会自动在main函数开头打断点
             "servertype": "openocd",
             "configFiles": [
-                "interface/cmsis-dap.cfg",
+                // "interface/cmsis-dap.cfg",
                 // "interface/stlink.cfg",
-                "target/stm32f4x.cfg"
+                // "target/stm32f4x.cfg"
+                "tools/openocd/interface/flash.cfg"
             ],
             "toolchainPrefix": "arm-none-eabi",
             "preLaunchTask": "build" // 在启动调试器之前运行的构建任务

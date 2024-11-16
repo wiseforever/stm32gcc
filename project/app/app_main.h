@@ -6,14 +6,12 @@
 extern "C" {
 #endif
 
-
-int app_main(void);
-
+int app_main();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* !__APP_MAIN_H__ */
+#endif /* ! __APP_MAIN_H__ */
 
 

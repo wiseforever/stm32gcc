@@ -30,7 +30,7 @@
             "}",
             "#endif",
             "",
-            "#endif /* !__${1:XX}_H__ */",
+            "#endif /* ! __${1:XX}_H__ */",
             "",
             "",
             ""
@@ -40,14 +40,17 @@
     "Cpp Header Template": {
         "prefix": "cppheader",
         "body": [
-            "#ifndef ${1:XX}_H",
-            "#define ${1:XX}_H",
+            "#ifndef __${1:XX}_H__",
+            "#define __${1:XX}_H__",
+            "",
+            "#ifdef __cplusplus",
             "",
             "",
             "",
             "",
+            "#endif  /* __cplusplus */",
             "",
-            "#endif /* !${1:XX}_H */",
+            "#endif /* ! __${1:XX}_H__ */",
             "",
             "",
             ""
@@ -58,7 +61,7 @@
         "prefix": "comment",
         "body": [
             "/**",
-            " *",
+            " * ",
             " */",
         ],
         "description": "TODO comment"

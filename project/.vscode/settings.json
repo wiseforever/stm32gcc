@@ -12,9 +12,9 @@
     "files.encoding": "utf8",
     "editor.tabSize": 4,
     "files.eol":"\n",
-    // 是否自动检测文件的缩进规则
+    /* 是否自动检测文件的缩进规则 */
     "editor.detectIndentation": false,
-    // tab 是否替换为空格 需要检测 editor.detectIndentation
+    /* tab 是否替换为空格 需要检测 editor.detectIndentation */
     "editor.insertSpaces": true,
     "terminal.integrated.fontFamily": "Consolas, 'Courier New', monospace",
     "terminal.integrated.fontSize": 14,
@@ -23,7 +23,7 @@
     "C_Cpp.intelliSenseEngine": "default",
     "C_Cpp.autoAddFileAssociations": false,
     "cortex-debug.variableUseNaturalFormat": false,
-    // Windows 上的默认终端配置文件。
+    /* Windows 上的默认终端配置文件。 */
     "terminal.integrated.defaultProfile.windows":"Git Bash",
     "terminal.integrated.profiles.windows": {
         "Git Bash": {
@@ -35,10 +35,29 @@
         "LANG": "en_US.UTF-8",
         "LC_ALL": "en_US.UTF-8"
     },
-    "task.autoDetect": "off",
+    /* 当没有找到编译数据库时，用于解析文件的额外clang标志。 */
+    "clangd.fallbackFlags": [
+
+    ],
     "files.associations": {
-        "*.h": "c",
         "*.c": "c",
-        "*.cpp": "cpp"
-    }
+        "*.h": "c",
+        "*.cpp": "cpp",
+        "*.hpp": "cpp",
+        "*.cc": "cpp",
+        "*.hh": "cpp",
+        "*.cxx": "cpp",
+        "*.hxx": "cpp",
+        "*.c++": "cpp",
+        "*.h++": "cpp",
+        "*.cp": "cpp",
+        "*.cppm": "cpp",
+        "*.c++m": "cpp",
+        "*.ccm": "cpp",
+        "*.cxxm": "cpp",
+        "*.h++m": "cpp",
+        "*.hxxm": "cpp",
+        "*.hhm": "cpp",
+        "*.cpm": "cpp"
+    },
 }

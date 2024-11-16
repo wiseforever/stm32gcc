@@ -36,6 +36,7 @@
 
 
 // #define configENABLE_FPU                            1
+// #define configUSE_TASK_FPU_SUPPORT                  2
 
 /*-----------------------------------------------------------
  * Application specific definitions.

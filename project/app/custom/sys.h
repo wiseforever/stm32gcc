@@ -9,7 +9,9 @@ extern "C" {
 
 
 #include "main.h"
+#include "log.h"
 #include "sdkconfig.h"
+// #include "EZAccessMicro.h"
 
 
 #define SystemFrequency SystemCoreClock
@@ -17,6 +19,8 @@ extern "C" {
 #define _boundary(in, a, b) ((in <= a) ? (a) : ((in > b) ? (b) : (in)))
 #define _inrange(x, min, max) ((x >= min) && (x <= max))
 
+/* 定义系统tick类型 */
+typedef uint32_t sys_tick_t;
 
 typedef enum
 {
@@ -32,8 +36,43 @@ typedef enum
 
 
 void inc_tick(void);
+sys_tick_t custom_tick_get(void);
+sys_tick_t sys_tick_get(void);
 
-unsigned int sys_tick_get(void);
+
+#if (SYSTEM_SUPPORT_OS == 1)
+
+    #if defined (INC_FREERTOS_H)
+        #include "task.h"
+        #include "queue.h"
+        #include "semphr.h"
+
+        #if __has_include("app_main.h")
+            #include "app_main.h"
+            extern TaskHandle_t app_main_thread_handle;
+            void app_main_thread(void *param);
+        #endif
+
+        /*** 
+         * @brief: 下面注释一些freertos中的API
+         *  taskENTER_CRITICAL_FROM_ISR()
+         *  
+         */
+        // 前两个是任务级的临界段代码保护，后两个是中断级的临界段代码保护。
+        // taskENTER_CRITICAL()
+        // taskEXIT_CRITICAL()
+        // 而且这个中断的优先级一定要低于 configMAX_SYSCALL_INTERRUPT_PRIORITY
+        // taskENTER_CRITICAL_FROM_ISR()
+        // taskEXIT_CRITICAL_FROM_ISR()。
+    #endif /* INC_FREERTOS_H */
+
+    sys_tick_t os_tick_get();
+    void os_suspend( void * task_to_suspend );
+    void os_resume( void * task_to_resume );
+    void os_suspend_all();
+    void os_resume_all();
+
+#endif /* SYSTEM_SUPPORT_OS == 1 */
 
 
 

@@ -1,9 +1,6 @@
 #include "sys.h"
 
-
-
-__IO unsigned int _sys_tick;
-
+static __IO sys_tick_t _sys_tick;
 
 typedef enum
 {
@@ -20,20 +17,99 @@ void inc_tick(void)
     _sys_tick += tick_freq;
 }
 
-unsigned int sys_tick_get(void)
+sys_tick_t custom_tick_get(void)
+{
+    return _sys_tick;
+}
+
+sys_tick_t sys_tick_get(void)
 {
     #if (SYSTEM_SUPPORT_OS == 0)
-    
-        __IO unsigned int _ticks = _sys_tick;
-        return _ticks;
+
+        return custom_tick_get();
 
     #elif (SYSTEM_SUPPORT_OS == 1)
 
-        return (unsigned int)os_tick_get();
+        return (sys_tick_t)os_tick_get();
 
     #endif
 }
 
+
+#if (SYSTEM_SUPPORT_OS == 1)
+    #ifdef INC_FREERTOS_H
+        TaskHandle_t app_main_thread_handle;
+
+        #if __has_include("iwdg.h")
+        TaskHandle_t iwdg_thread_handle;
+        void iwdg_thread(void *param)
+        {
+            static uint32_t iwdg_ms = 0;
+
+            while(1)
+            {
+                if(xTaskGetTickCount() - iwdg_ms > 1000) {
+                    iwdg_ms = xTaskGetTickCount();
+                    HAL_IWDG_Refresh(&hiwdg);
+                }
+                delay_ms(10);
+            }
+        }
+        #endif
+
+        void app_main_thread(void *param)
+        {
+            #if __has_include("iwdg.h")
+                xTaskCreate(iwdg_thread, "iwdg_thread", 512, NULL, 3, &iwdg_thread_handle);
+            #endif
+
+            app_main();
+
+            vTaskDelete(NULL);
+        }
+    #endif /* INC_FREERTOS_H */
+
+
+    sys_tick_t os_tick_get()
+    {
+        #if defined(INC_FREERTOS_H)
+            return (sys_tick_t)xTaskGetTickCount();
+        /* #elif defined() */
+
+        #else
+            return -1;
+        #endif
+    }
+
+    void os_suspend( void * task_to_suspend )
+    {
+        #if defined(INC_FREERTOS_H)
+            vTaskSuspend( (TaskHandle_t)task_to_suspend );
+        #endif
+    }
+
+    void os_resume( void * task_to_resume )
+    {
+        #if defined(INC_FREERTOS_H)
+            vTaskResume( (TaskHandle_t)task_to_resume );
+        #endif
+    }
+
+    void os_suspend_all()
+    {
+        #if defined(INC_FREERTOS_H)
+            vTaskSuspendAll();
+        #endif
+    }
+
+    void os_resume_all()
+    {
+        #if defined(INC_FREERTOS_H)
+            xTaskResumeAll();
+        #endif
+    }
+
+#endif /* SYSTEM_SUPPORT_OS == 1 */
 
 
 

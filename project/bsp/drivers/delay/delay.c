@@ -1,8 +1,8 @@
 #include "delay.h"
 
 
-// #define SysTick_CLKSource_HCLK_Div8    ((uint32_t)0xFFFFFFFB)
-// #define SysTick_CLKSource_HCLK         ((uint32_t)0x00000004)
+// #define SysTick_CLKSource_HCLK_Div8    ((sys_tick_t)0xFFFFFFFB)
+// #define SysTick_CLKSource_HCLK         ((sys_tick_t)0x00000004)
 // #define IS_SYSTICK_CLK_SOURCE(SOURCE) (((SOURCE) == SysTick_CLKSource_HCLK) || \
 //                                        ((SOURCE) == SysTick_CLKSource_HCLK_Div8))
 
@@ -14,10 +14,10 @@
 
 #define SystemFrequency SystemCoreClock
 
-volatile unsigned int time_delay; // 延时时间，注意定义为全局变量
+volatile sys_tick_t time_delay; // 延时时间，注意定义为全局变量
 
 //延时xus
-void delay_xus(volatile unsigned int xus)
+void delay_xus(volatile sys_tick_t xus)
 {
 
     // //SYSTICK分频--1us的系统时钟中断
@@ -30,11 +30,11 @@ void delay_xus(volatile unsigned int xus)
     // SysTick->VAL = 0x00; //清空计数器
 
 
-    uint32_t ticks = 0;
-    uint32_t told = 0;
-    uint32_t tnow = 0;
-    uint32_t reload = 0;
-    uint32_t tcnt = 0;
+    sys_tick_t ticks = 0;
+    sys_tick_t told = 0;
+    sys_tick_t tnow = 0;
+    sys_tick_t reload = 0;
+    sys_tick_t tcnt = 0;
     if((0x0001&(SysTick->CTRL)) == 0)    //定时器未工作
 
     reload = SysTick->LOAD;                     //获取重装载寄存器值
@@ -62,7 +62,7 @@ void delay_xus(volatile unsigned int xus)
 }
  
 //延时xms
-void delay_xms(volatile unsigned int xms)
+void delay_xms(volatile sys_tick_t xms)
 {
     // //SYSTICK分频--1ms的系统时钟中断
     // while (SysTick_Config(SystemFrequency / 1000)) {}
@@ -88,7 +88,7 @@ void delay_xms(volatile unsigned int xms)
      * @param  xus 延时时长，范围：0~4294967295
      * @retval 无
      */
-    void Delay_us(uint32_t xus)
+    void Delay_us(sys_tick_t xus)
     {
         SysTick->LOAD = 72 * xus;				//设置定时器重装值
         SysTick->VAL = 0x00;					//清空当前计数值
@@ -102,7 +102,7 @@ void delay_xms(volatile unsigned int xms)
      * @param  xms 延时时长，范围：0~4294967295
      * @retval 无
      */
-    void Delay_ms(uint32_t xms)
+    void Delay_ms(sys_tick_t xms)
     {
         while(xms--)
         {
@@ -115,7 +115,7 @@ void delay_xms(volatile unsigned int xms)
      * @param  xs 延时时长，范围：0~4294967295
      * @retval 无
      */
-    void Delay_s(uint32_t xs)
+    void Delay_s(sys_tick_t xs)
     {
         while(xs--)
         {
@@ -147,10 +147,10 @@ void delay_xms(volatile unsigned int xms)
         d.当所计数值等于（大于）需要延时的时间数值时退出。
         注：计数时间值的计算，我们以延时10us，时钟频率为72MHZ的STM32F103C8T6来计算，
                 计数值 = 延时时间/1S × 时钟频率 = 0.000 01/1 *72 000 000 =  720 */
-        void os_delay_xus(uint32_t xus)
+        void os_delay_xus(sys_tick_t xus)
         { 
-            uint32_t ticks;
-            uint32_t told, tnow, reload, tcnt = 0;
+            sys_tick_t ticks;
+            sys_tick_t told, tnow, reload, tcnt = 0;
             if((0x0001&(SysTick->CTRL)) == 0)    //定时器未工作
                     vPortSetupTimerInterrupt();  //初始化定时器
 
@@ -192,7 +192,7 @@ void delay_xms(volatile unsigned int xms)
         // }
 
         // // 微秒级别延时函数
-        // void os_delay_xus(uint32_t xus)
+        // void os_delay_xus(sys_tick_t xus)
         // {
         //     // 创建或重置软件定时器
         //     if (xMicrosecondTimer == NULL)
@@ -201,7 +201,7 @@ void delay_xms(volatile unsigned int xms)
         //     }
 
         //     // 计算延时时间
-        //     const uint32_t usDelayTicks = xus / portTICK_PERIOD_MS;
+        //     const sys_tick_t usDelayTicks = xus / portTICK_PERIOD_MS;
             
         //     // 启动软件定时器
         //     xTimerChangePeriod(xMicrosecondTimer, usDelayTicks, 0);
@@ -216,7 +216,7 @@ void delay_xms(volatile unsigned int xms)
 #endif
 
 
-void delay_ms(uint32_t ms) {
+void delay_ms(sys_tick_t ms) {
     #if (SYSTEM_SUPPORT_OS == 0)
 
         delay_xms(ms);
@@ -239,7 +239,7 @@ void delay_ms(uint32_t ms) {
     #endif
 }
 
-void delay_us(uint32_t us) {
+void delay_us(sys_tick_t us) {
     #if (SYSTEM_SUPPORT_OS == 0)
         delay_xus(us);
     #elif (SYSTEM_SUPPORT_OS == 1)

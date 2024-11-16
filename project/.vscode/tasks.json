@@ -1,72 +1,111 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "type": "shell",
+            "type": "shell", // 定义任务类型为 shell，用于运行 shell 命令
+            "label": "cmake", // 任务的标签
             "options": {
-                "cwd": "${workspaceRoot}"
+                "cwd": "${workspaceFolder}" // 设置工作目录为项目根目录 已执行程序或脚本的当前工作目录。如果省略，则使用代码的当前工作区根。
             },
-            "command": "compiledb",
+            "command": "cmake", // 使用 make 命令
             "args": [
-                "make",
-                "-j16"
-            ],
+                "-S",
+                ".",
+                "-B",
+                "build",
+                "-G",
+                "Unix Makefiles"
+            ], // 传递参数给 make
             "group": {
-                "kind": "build",    // build ：与label的build没有任何联系。
-                "isDefault": false  // 是否默认启动此任务
+                "kind": "build", // 将任务分组为构建任务
+                "isDefault": false // 是否默认构建任务
             },
             "presentation": {
                 "reveal": "always", // 构建任务完成后总是显示输出面板
                 // "panel": "new" // 在新面板中显示输出
             },
-            // "problemMatcher": [
-            //     "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
-            // ]
+            "problemMatcher": [
+                "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
+            ]
         },
         {
-            "label": "rebuild",
-            "type": "shell",
+            "type": "shell", // 定义任务类型为 shell，用于运行 shell 命令
+            "label": "build", // 任务的标签
             "options": {
-                "cwd": "${workspaceRoot}"
+                "cwd": "${workspaceFolder}" // 设置工作目录为项目根目录 已执行程序或脚本的当前工作目录。如果省略，则使用代码的当前工作区根。
+                // "cwd": "${workspaceRoot}" // 设置工作目录为项目根目录 已执行程序或脚本的当前工作目录。如果省略，则使用代码的当前工作区根。
             },
-            "command": "compiledb",
+            "command": "cmake", // 使用 make 命令
             "args": [
-                "make",
-                "-j16"
-            ],
+                "--build",
+                "build",
+                "-j16"/* ,
+                "--config=Release" */
+            ], // 传递参数给 make
             "group": {
-                "kind": "build",    // build ：与label的build没有任何联系。
-                "isDefault": false  // 是否默认启动此任务
+                "kind": "build", // 将任务分组为构建任务
+                "isDefault": false // 是否默认构建任务
             },
             "presentation": {
                 "reveal": "always", // 构建任务完成后总是显示输出面板
                 // "panel": "new" // 在新面板中显示输出
             },
+            "problemMatcher": [
+                "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
+            ],
             "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
-            "dependsOn": ["clean"]   // 所依赖的任务
+            // "dependsOn": ["cmake"]   // 所依赖的任务
         },
         {
-            "label": "download",
-            "type": "shell",
+            "type": "shell", // 定义任务类型为 shell，用于运行 shell 命令
+            "label": "rebuild", // 任务的标签
             "options": {
-                "cwd": "${workspaceRoot}"
+                "cwd": "${workspaceFolder}" // 设置工作目录为项目根目录 已执行程序或脚本的当前工作目录。如果省略，则使用代码的当前工作区根。
             },
-            "command": "openocd",
+            "command": "cmake", // 使用 make 命令
             "args": [
-                "-f",
-                "tools/openocd/interface/flash_downloader.cfg",
-                "-c",
-                "\"program build/project.hex verify reset exit\""
-            ],
+                "--build",
+                "build",
+                "-j16"/* ,
+                "--config=Release" */
+            ], // 传递参数给 make
             "group": {
-                "kind": "build",
-                "isDefault": false   // 是否默认启动此任务
+                "kind": "build", // 将任务分组为构建任务
+                "isDefault": false // 是否默认构建任务
             },
+            "presentation": {
+                "reveal": "always", // 构建任务完成后总是显示输出面板
+                // "panel": "new" // 在新面板中显示输出
+            },
+            "problemMatcher": [
+                "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
+            ],
             "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
-            "dependsOn": ["build"]   // 所依赖的任务
+            "dependsOn": ["clean","cmake"]   // 所依赖的任务
+        },
+        {
+            "type": "shell", // 定义任务类型为 shell，用于运行 shell 命令
+            "label": "flash", // 任务的标签
+            "options": {
+                "cwd": "${workspaceFolder}/tools" // 设置工作目录为项目根目录 已执行程序或脚本的当前工作目录。如果省略，则使用代码的当前工作区根。
+            },
+            "command": "./flash.sh", // 命令
+            "args": [
+                
+            ], // 传递参数给 make
+            "group": {
+                "kind": "build", // 将任务分组为构建任务
+                "isDefault": false // 是否默认构建任务
+            },
+            "presentation": {
+                "reveal": "always", // 构建任务完成后总是显示输出面板
+                // "panel": "new" // 在新面板中显示输出
+            },
+            "problemMatcher": [
+                "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
+            ],
+            // "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
+            // "dependsOn": ["build"]   // 所依赖的任务
         },
         {
             "label": "clean",
@@ -74,17 +113,17 @@
             "options": {
                 "cwd": "${workspaceRoot}"
             },
-            "command": "make",
+            "command": "rm",
             "args": [
-                "-j16",
-                "clean"
+                "-rf",
+                "build/*"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": false   // 是否默认启动此任务
             },
             // "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
-            // "dependsOn": ["build"]   // 所依赖的任务
+            // "dependsOn": ["building"]   // 所依赖的任务
         }
     ]
 }
