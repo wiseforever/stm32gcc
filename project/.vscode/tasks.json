@@ -4,6 +4,22 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "mkdir_build",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            },
+            "command": "mkdir",
+            "args": [
+                "-p",
+                "build"
+            ],
+            "presentation": {
+                "reveal": "always", // 任务完成后总是显示输出面板
+                // "panel": "new" // 在新面板中显示输出
+            }
+        },
+        {
             "label": "build",
             "type": "shell",
             "options": {
@@ -11,6 +27,8 @@
             },
             "command": "compiledb",
             "args": [
+                "-o",
+                "./build/compile_commands.json",
                 "make",
                 "-j16"
             ],
@@ -25,6 +43,8 @@
             // "problemMatcher": [
             //     "$gcc" // 使用 gcc 错误匹配器来捕获编译错误
             // ]
+            "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
+            "dependsOn": ["mkdir_build"]   // 所依赖的任务
         },
         {
             "label": "rebuild",
@@ -34,6 +54,8 @@
             },
             "command": "compiledb",
             "args": [
+                "-o",
+                "./build/compile_commands.json",
                 "make",
                 "-j16"
             ],
@@ -46,7 +68,7 @@
                 // "panel": "new" // 在新面板中显示输出
             },
             "dependsOrder": "sequence", // sequence ：按顺序运行 dependsOn 中的任务； parallel ：并行运行dependsOn中的任务。
-            "dependsOn": ["clean"]   // 所依赖的任务
+            "dependsOn": ["clean", "mkdir_build"]   // 所依赖的任务
         },
         {
             "label": "download",
