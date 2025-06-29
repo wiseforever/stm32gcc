@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "Debug Configuration",
-            "compileCommands": "${workspaceFolder}/compile_commands.json",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "includePath": [
                 // "${workspaceFolder}",
                 // "${workspaceFolder}/**"
