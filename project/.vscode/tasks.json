@@ -87,7 +87,7 @@
             "type": "shell", // 定义任务类型为 shell，用于运行 shell 命令
             "label": "flash", // 任务的标签
             "options": {
-                "cwd": "${workspaceFolder}/tools" // 设置工作目录为项目根目录 已执行程序或脚本的当前工作目录。如果省略，则使用代码的当前工作区根。
+                "cwd": "${workspaceFolder}" // 设置工作目录为项目根目录 已执行程序或脚本的当前工作目录。如果省略，则使用代码的当前工作区根。
             },
             "command": "./flash.sh", // 命令
             "args": [
